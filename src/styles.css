@@ -1,0 +1,14 @@
+/* Import a modern font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+/* Add the core Tailwind CSS directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apply the background and font to the whole page */
+body {
+  background-color: #020617; /* Fallback color */
+  background-image: radial-gradient(circle at top, #1e293b 0%, #020617 100%);
+  font-family: 'Inter', sans-serif;
+}

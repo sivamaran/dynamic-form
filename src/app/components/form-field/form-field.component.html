@@ -1,0 +1,43 @@
+<div [formGroup]="form" [ngSwitch]="field.fieldType" class="w-full">
+  <!-- Common class list for inputs -->
+  <ng-template #commonInput let-type="type">
+    <input
+      [type]="type"
+      [formControlName]="field.fieldName"
+      [placeholder]="'Enter ' + field.label.toLowerCase()"
+      class="w-full rounded-lg p-3 text-white bg-slate-700 border border-slate-600 focus:ring-2 focus:ring-cyan-500 focus:outline-none transition duration-300"
+      [style.backgroundColor]="styling.fieldBackground"
+      [style.color]="styling.textColor"
+    />
+  </ng-template>
+
+  <!-- Render based on fieldType -->
+  <ng-container *ngSwitchCase="'text'">
+    <ng-container *ngTemplateOutlet="commonInput; context: { type: 'text' }"></ng-container>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'email'">
+    <ng-container *ngTemplateOutlet="commonInput; context: { type: 'email' }"></ng-container>
+  </ng-container>
+
+  <textarea
+    *ngSwitchCase="'textarea'"
+    [formControlName]="field.fieldName"
+    [placeholder]="'Enter ' + field.label.toLowerCase()"
+    rows="4"
+    class="w-full rounded-lg p-3 text-white bg-slate-700 border border-slate-600 focus:ring-2 focus:ring-cyan-500 focus:outline-none transition duration-300"
+    [style.backgroundColor]="styling.fieldBackground"
+    [style.color]="styling.textColor"
+  ></textarea>
+
+  <select
+    *ngSwitchCase="'select'"
+    [formControlName]="field.fieldName"
+    class="w-full rounded-lg p-3 text-white bg-slate-700 border border-slate-600 focus:ring-2 focus:ring-cyan-500 focus:outline-none transition duration-300"
+    [style.backgroundColor]="styling.fieldBackground"
+    [style.color]="styling.textColor"
+  >
+    <option [ngValue]="null">Select {{ field.label.toLowerCase() }}</option>
+    <option *ngFor="let opt of field.options" [value]="opt">{{ opt }}</option>
+  </select>
+</div>

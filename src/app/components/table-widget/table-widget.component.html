@@ -1,0 +1,33 @@
+<div class="w-full">
+  <div class="overflow-x-auto rounded-lg border" [style.borderColor]="styling.tableBorderColor || '#334155'">
+    <table class="min-w-full divide-y" [style.divideColor]="styling.tableBorderColor || '#334155'">
+      <thead [style.backgroundColor]="styling.tableBackground || '#1e293b'">
+        <tr>
+          <th *ngFor="let col of columns" class="px-4 py-2 text-left text-sm font-semibold" [style.color]="styling.labelColor || '#cbd5e1'">
+            {{ col.header }}
+          </th>
+          <th class="w-16"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y" [style.divideColor]="styling.tableBorderColor || '#334155'">
+        <tr *ngFor="let row of rows; let i = index; trackBy: trackByIndex">
+          <td *ngFor="let col of columns" class="whitespace-nowrap px-2 py-1">
+            <input
+              type="text"
+              class="w-full bg-slate-700 p-2 rounded-md border-0 focus:ring-2 focus:ring-cyan-500"
+              [style.backgroundColor]="styling.fieldBackground"
+              [style.color]="styling.textColor"
+              [ngModel]="row[col.key]"
+              (ngModelChange)="handleCellChange($event, i, col.key)"
+              [disabled]="isDisabled"
+            />
+          </td>
+          <td class="whitespace-nowrap px-2 py-1 text-center">
+            <button type="button" (click)="handleRemoveRow(i)" class="text-red-500 hover:text-red-400 font-bold">&times;</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <button type="button" (click)="handleAddRow()" [disabled]="isDisabled" class="mt-2 text-cyan-400 hover:text-cyan-300 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed">+ Add Row</button>
+</div>

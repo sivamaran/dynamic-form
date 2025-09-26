@@ -1,0 +1,54 @@
+<div class="min-h-screen flex flex-col items-center justify-center font-sans p-4 transition-colors duration-500" style="background-color: #0f172a">
+  <app-submission-modal [modalState]="modalState" (close)="closeModal()"></app-submission-modal>
+  <div class="w-full max-w-3xl mx-auto bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-2xl p-6 md:p-8">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold text-cyan-400">AI Form Generator</h1>
+      <p class="text-slate-400 mt-2">Describe the form you want to create, and AI will build it for you.</p>
+    </div>
+    <div class="flex flex-col gap-4 mb-6">
+      <textarea
+        [(ngModel)]="prompt"
+        placeholder="Describe your form here..."
+        class="bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-cyan-500 h-28 resize-none"
+      ></textarea>
+      <button (click)="generateForm()" [disabled]="isLoading" class="bg-cyan-600 hover:bg-cyan-500 disabled:bg-slate-600 text-white font-bold py-3 px-6 rounded-lg transition shadow-lg flex items-center justify-center">
+        <span *ngIf="isLoading">Generating...</span>
+        <span *ngIf="!isLoading">Generate Form</span>
+      </button>
+    </div>
+    <div *ngIf="error" class="bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg mb-6">{{ error }}</div>
+    <div 
+      class="p-6 rounded-xl border border-slate-700 min-h-[300px]"
+      [style.backgroundColor]="formDefinition?.styling?.formBackground || 'rgba(15, 23, 42, 0.5)'"
+    >
+      <form *ngIf="formDefinition; else placeholder" [formGroup]="dynamicForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <div *ngFor="let field of formDefinition.fields">
+          <label [for]="field.fieldName" class="mb-2 font-medium block" [style.color]="formDefinition.styling.labelColor || '#cbd5e1'">
+            {{ field.label }}
+            <span *ngIf="field.validation?.required" class="text-red-500 ml-1">*</span>
+          </label>
+          <div [ngSwitch]="field.componentType">
+            <app-form-field *ngSwitchCase="'field'" [field]="field" [form]="dynamicForm" [styling]="formDefinition.styling"></app-form-field>
+            <div *ngSwitchCase="'widget'" [ngSwitch]="field.widgetName">
+              <app-table-widget *ngSwitchCase="'TableWidget'" [formControlName]="field.fieldName" [columns]="field.props?.columns || []" [styling]="formDefinition.styling"></app-table-widget>
+              <app-checkbox-group-widget *ngSwitchCase="'CheckboxWidget'" [formControlName]="field.fieldName" [options]="field.props?.options || field.options || []" [styling]="formDefinition.styling"></app-checkbox-group-widget>
+              <!-- Add the case for our new widget -->
+              <app-country-flag-dropdown *ngSwitchCase="'CountryFlagDropDownWidget'" [formControlName]="field.fieldName"></app-country-flag-dropdown>
+              <div *ngSwitchDefault class="text-red-500">Unknown widget: {{ field.widgetName }}</div>
+            </div>
+          </div>
+        </div>
+        <button type="submit" [disabled]="isLoading || dynamicForm.invalid" class="w-full text-white font-bold py-3 px-6 rounded-lg transition transform hover:scale-105 shadow-lg !mt-8 disabled:bg-slate-600 disabled:cursor-not-allowed" [style.backgroundColor]="formDefinition.styling.buttonColor || '#0891b2'">
+          <span *ngIf="isLoading">Submitting...</span>
+          <span *ngIf="!isLoading">Submit</span>
+        </button>
+      </form>
+      <ng-template #placeholder>
+        <div class="flex items-center justify-center h-full text-slate-500">
+          <p *ngIf="isLoading">AI is building your form...</p>
+          <p *ngIf="!isLoading">The generated form will appear here.</p>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

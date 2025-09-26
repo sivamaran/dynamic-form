@@ -1,0 +1,16 @@
+<div class="space-y-4"> <!-- Increased vertical spacing -->
+  <div *ngFor="let option of options" class="flex items-center">
+    <input
+      type="checkbox"
+      [id]="option"
+      [name]="option"
+      [(ngModel)]="checkboxes[option]"
+      (ngModelChange)="onCheckboxChange()"
+      [disabled]="isDisabled"
+      class="h-5 w-5 rounded-sm border-2 border-slate-400 bg-transparent text-cyan-500 focus:ring-cyan-500 focus:ring-offset-slate-800 cursor-pointer"
+    />
+    <label [for]="option" class="ml-4 block text-lg" [style.color]="styling.textColor || 'white'"> <!-- Increased margin and text size -->
+      {{ option }}
+    </label>
+  </div>
+</div>
